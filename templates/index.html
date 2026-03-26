@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Risk Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Assignment Risk Predictor</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="mb-8 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+            <input type="file" name="file" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Analyze File</button>
+        </form>
+
+        {% if report %}
+        <div class="border-t pt-6">
+            <h2 class="text-xl font-semibold mb-2">Analysis for: <span class="text-blue-600">{{ report.filename }}</span></h2>
+            
+            <div class="mb-6">
+                <div class="flex justify-between mb-1">
+                    <span class="text-sm font-medium text-gray-700">Overall Risk Score</span>
+                    <span class="text-sm font-medium text-gray-700">{{ (report.overall_risk_score * 100)|round(1) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div class="bg-red-500 h-4 rounded-full" style="width: {{ report.overall_risk_score * 100 }}%"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for key, value in report.items() %}
+                    {% if key not in ['overall_risk_score', 'filename'] %}
+                    <div class="bg-gray-50 p-3 rounded border">
+                        <p class="text-xs uppercase text-gray-500 font-bold">{{ key.replace('_', ' ') }}</p>
+                        <p class="text-lg font-mono text-gray-800">{{ value }}</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
